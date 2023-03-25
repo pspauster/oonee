@@ -24,6 +24,8 @@ pod_locations_clean <- pod_locations %>%
          ) %>% 
   st_as_sf(coords = c("longitude", "latitude")) #this makes it into a simple features (spatial) object
 
+# handy spatial in R commands here: https://github.com/rstudio/cheatsheets/blob/main/sf.pdf
+
 saveRDS(pod_locations_clean, "Data/clean/pod_locations.rds") #save as an R dataset to pull in later
   
 
