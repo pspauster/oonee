@@ -17,6 +17,8 @@ saveRDS(bike_racks_clean, "Data/clean/bike_racks.rds") #save as an R dataset to 
 
 test <- read.socrata("https://data.cityofnewyork.us/resource/au7q-njtk.json")
 
+test2 <- read.socrata("https://data.cityofnewyork.us/resource/s5uu-3ajy.json")
+
 #########################
 
 # here's how to pull spatial data direct from the web without having to save down
