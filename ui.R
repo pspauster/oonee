@@ -20,11 +20,35 @@ ui <- fluidPage(
         inline = TRUE
       ),
       checkboxGroupInput(
-          "overlay",
+          "overlay_bike",
           "Bike Infrastructure", 
           selected = NULL,
-          choices = c("Bike lanes", "Bike racks", "Bike corrals")
+          choices = c("Bike lanes", "Bike racks")
         ),
+      checkboxGroupInput(
+        "overlay_theft",
+        "Bike Theft", 
+        selected = NULL,
+        choices = c("Per capita", "Total")
+      ),
+      checkboxGroupInput(
+        "overlay_theft",
+        "Bike Theft", 
+        selected = NULL,
+        choices = c("Per capita", "Total")
+      ),
+      checkboxGroupInput(
+        "overlay_subway",
+        "Subway/PATH", 
+        selected = NULL,
+        choices = c("Stations", "Routes")
+      ),
+      materialSwitch(
+        "landuse_onoff",
+        "Land Use",
+        value = FALSE,
+        status = "primary"
+      ),
     ),
     mainPanel = mainPanel(
       leafletOutput(outputId = 'map')

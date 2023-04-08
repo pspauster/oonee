@@ -18,5 +18,28 @@ bike_lanes <- readRDS(paste0(data_dir,"bike_lanes.rds"))
 
 oonee_pods <- readRDS(paste0(data_dir, "pod_locations.rds"))
 
+bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))
+
+thefts_pcap <- readRDS(paste0(data_dir, "bike_thefts_per_capita_clean.rds"))
+
+landuse <- readRDS(paste0(data_dir, "mappluto.rds"))
+
+subway_stations <- readRDS(paste0(data_dir, "Subway_stations_clean.rds")) %>% 
+  st_set_crs(2263)
+
+subway_routes <- readRDS(paste0(data_dir, "Subway_routes_clean.rds"))%>% 
+  st_set_crs(2263)
+
+PATH_stations <- readRDS(paste0(data_dir, "PATH_stations_clean.rds"))%>% 
+  st_set_crs(2263)
+
+PATH_routes <- readRDS(paste0(data_dir, "PATH_routes_clean.rds"))%>% 
+  st_set_crs(2263)
+
+subway_route_layer <- rbind(subway_stations %>% select(geometry), PATH_stations %>%  select(geometry))
+subway_station_layer <- rbind(subway_routes%>% select(geometry), PATH_routes%>% select(geometry))
+
+
+
 
 

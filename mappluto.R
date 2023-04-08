@@ -3,9 +3,10 @@ library(sf)
 library(RSocrata)
 library(arcpullr)
 
-download.file("https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/nyc_mappluto_22v3_1_shp.zip", "C:/Users/patri/Downloads/test.zip")
-unzip(zipfile = "C:/Users/patri/Downloads/test.zip", exdir = "C:/Users/patri/Downloads/test")
-pluto_22v3 <- read_sf("C:/Users/patri/Downloads/test")
+dest <- "/Users/patrickspauster/Downloads"
+download.file("https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/nyc_mappluto_22v3_1_shp.zip", paste0(dest,"/test.zip"))
+unzip(zipfile = paste0(dest,"/test.zip"), exdir = paste0(dest,"/test"))
+pluto_22v3 <- read_sf(paste0(dest,"/test"))
 
 mappluto_clean <- pluto_22v3 %>% janitor::clean_names() %>% 
   mutate(landuse_clean = case_when(
@@ -21,6 +22,7 @@ mappluto_clean <- pluto_22v3 %>% janitor::clean_names() %>%
     land_use == "10" ~ "Vacant/Parking",
     land_use == "11" ~ "Vacant/Parking")) %>% 
   group_by(landuse_clean) %>% 
-  st_union()
+  summarize(geometry = st_union(geometry)) %>% 
+  st_simplify(dTolerance = 10)
   
 saveRDS(mappluto_clean, "Data/clean/mappluto.rds")
