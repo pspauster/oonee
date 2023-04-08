@@ -18,3 +18,4 @@ saveRDS(middleincomejobs, "Data/clean/middleincomejobs.rds")
 highincomejobs <- jobs %>% select(ce03)
 
 saveRDS(highincomejobs, "Data/clean/highincomejobs.rds")
+
