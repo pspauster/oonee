@@ -32,12 +32,6 @@ ui <- fluidPage(
         choices = c("Per capita", "Total")
       ),
       checkboxGroupInput(
-        "overlay_theft",
-        "Bike Theft", 
-        selected = NULL,
-        choices = c("Per capita", "Total")
-      ),
-      checkboxGroupInput(
         "overlay_subway",
         "Subway/PATH", 
         selected = NULL,

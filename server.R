@@ -72,7 +72,7 @@ server <- function(input, output) {
   
   subway_station_overlay <- reactive({
     ss_selected <- 
-      subway_station_layer %>% 
+      subway_stations %>% 
       filter(
         "Stations" %in% input$overlay_subway
       ) %>% 
@@ -82,12 +82,32 @@ server <- function(input, output) {
   
   subway_route_overlay <- reactive({
     sr_selected <- 
-      subway_route_layer %>% 
+      subway_routes %>% 
       filter(
         "Routes" %in% input$overlay_subway
       ) %>% 
       st_set_crs(6623)
     return(sr_selected)
+  })
+  
+  path_station_overlay <- reactive({
+    ps_selected <- 
+      PATH_stations %>% 
+       filter(
+         "Stations" %in% input$overlay_subway
+       ) %>% 
+      st_set_crs(6623)
+    return(ps_selected)
+  })
+  
+  path_route_overlay <- reactive({
+    pr_selected <- 
+      PATH_routes %>% 
+      filter(
+        "Routes" %in% input$overlay_subway
+      ) %>% 
+      st_set_crs(6623)
+    return(pr_selected)
   })
   
   output$map = renderLeaflet({
@@ -97,8 +117,10 @@ server <- function(input, output) {
       addCircleMarkers(data = pods_df(), radius = 1) %>% 
       addPolygons(data = bikelanes_overlay()) %>% 
       addPolygons(data = subway_route_overlay()) %>% 
+      addPolygons(data = path_route_overlay()) %>% 
       addCircleMarkers(data = bikeracks_overlay(), radius = 1) %>% 
       addCircleMarkers(data = subway_station_overlay(), radius = 1) %>% 
+      addCircleMarkers(data = path_station_overlay(), radius = 1) %>% 
       addPolygons(data = theftpcap_overlay(),
                   stroke = F,
                   fillOpacity = 0.3,

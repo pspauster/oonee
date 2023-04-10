@@ -31,13 +31,14 @@ subway_routes <- readRDS(paste0(data_dir, "Subway_routes_clean.rds"))%>%
   st_set_crs(2263)
 
 PATH_stations <- readRDS(paste0(data_dir, "PATH_stations_clean.rds"))%>% 
-  st_set_crs(2263)
+  st_transform(2263)%>% 
+  st_cast("POINT")
 
 PATH_routes <- readRDS(paste0(data_dir, "PATH_routes_clean.rds"))%>% 
-  st_set_crs(2263)
+  st_transform(2263) %>% 
+  st_sfc("geometry") %>% 
+  st_cast("MULTIPOLYGON")
 
-subway_route_layer <- rbind(subway_stations %>% select(geometry), PATH_stations %>%  select(geometry))
-subway_station_layer <- rbind(subway_routes%>% select(geometry), PATH_routes%>% select(geometry))
 
 
 
