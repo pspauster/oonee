@@ -58,17 +58,17 @@ server <- function(input, output) {
     return(theft_total_selected)
   })
   
-  landuse_bins <- colorFactor(topo.colors(length(landuse$landuse_clean)), landuse$landuse_clean)
+  #landuse_bins <- colorFactor(topo.colors(length(landuse$landuse_clean)), landuse$landuse_clean)
   
-  landuse_overlay <- reactive({
-    lu_selected <- 
-      landuse %>% 
-      filter(
-        input$landuse_onoff == T
-      ) %>% 
-      st_set_crs(6623)
-    return(lu_selected)
-  })
+  # landuse_overlay <- reactive({
+  #   lu_selected <- 
+  #     landuse %>% 
+  #     filter(
+  #       input$landuse_onoff == T
+  #     ) %>% 
+  #     st_set_crs(6623)
+  #   return(lu_selected)
+  # })
   
   subway_station_overlay <- reactive({
     ss_selected <- 
@@ -112,7 +112,7 @@ server <- function(input, output) {
   
   output$map = renderLeaflet({
     leaflet() %>%
-      addTiles() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>% 
       setView(lng = -73.98867, lat = 40.71765, zoom = 12) %>%
       addCircleMarkers(data = pods_df(), radius = 1) %>% 
       addPolygons(data = bikelanes_overlay()) %>% 
@@ -121,20 +121,46 @@ server <- function(input, output) {
       addCircleMarkers(data = bikeracks_overlay(), radius = 1) %>% 
       addCircleMarkers(data = subway_station_overlay(), radius = 1) %>% 
       addCircleMarkers(data = path_station_overlay(), radius = 1) %>% 
+      # addPolygons(data = landuse_overlay(),
+      #             stroke = F,
+      #             fillOpacity = 0.3,
+      #             color = ~landuse_bins(landuse_clean)) %>% 
       addPolygons(data = theftpcap_overlay(),
                   stroke = F,
                   fillOpacity = 0.3,
                   color = ~theft_pcap_quintile(ne_wthftpop)) %>% 
-    addPolygons(data = theft_total_overlay(),
+      addPolygons(data = theft_total_overlay(),
                 stroke = F,
                 fillOpacity = 0.3,
-                color = ~theft_total_quintile(numpoints)) %>% 
-    addPolygons(data = landuse_overlay(),
-                stroke = F,
-                fillOpacity = 0.3,
-                color = ~landuse_bins(landuse_clean))
-    })
+                color = ~theft_total_quintile(numpoints)) 
 
+    })
+  
+  observe({
+    proxy <- leafletProxy("map")
+    
+    proxy %>% clearControls()
+    if ("Per capita" %in% input$overlay_theft) {
+      proxy %>% 
+        addLegend(data = theftpcap_overlay(), 
+                  "bottomright", 
+                  pal = theft_pcap_quintile, values = ~ne_wthftpop,
+                  title = "Thefts per capita",
+                  labFormat = labelFormat(prefix = ""),
+                  opacity = 1
+        )
+    }
+    if ("Total" %in% input$overlay_theft) {
+        proxy %>% 
+          addLegend(data = theftpcap_overlay(), 
+                    "bottomright", 
+                    pal = theft_total_quintile, values = ~numpoints,
+                    title = "Total Thefts",
+                    labFormat = labelFormat(prefix = ""),
+                    opacity = 1
+          )
+    }
+  })
   
 
 }

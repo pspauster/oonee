@@ -37,12 +37,12 @@ ui <- fluidPage(
         selected = NULL,
         choices = c("Stations", "Routes")
       ),
-      materialSwitch(
-        "landuse_onoff",
-        "Land Use",
-        value = FALSE,
-        status = "primary"
-      ),
+      # materialSwitch(
+      #   "landuse_onoff",
+      #   "Land Use",
+      #   value = FALSE,
+      #   status = "primary"
+      # ),
     ),
     mainPanel = mainPanel(
       leafletOutput(outputId = 'map')

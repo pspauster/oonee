@@ -22,7 +22,7 @@ bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))
 
 thefts_pcap <- readRDS(paste0(data_dir, "bike_thefts_per_capita_clean.rds"))
 
-landuse <- readRDS(paste0(data_dir, "mappluto.rds"))
+#landuse <- readRDS(paste0(data_dir, "mappluto.rds"))
 
 subway_stations <- readRDS(paste0(data_dir, "Subway_stations_clean.rds")) %>% 
   st_set_crs(2263)
