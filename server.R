@@ -103,36 +103,53 @@ server <- function(input, output) {
   path_route_overlay <- reactive({
     pr_selected <- 
       PATH_routes %>% 
-      filter(
-        "Routes" %in% input$overlay_subway
-      ) %>% 
+      # filter(
+      #   "Routes" %in% input$overlay_subway
+      # ) %>% 
       st_set_crs(6623)
     return(pr_selected)
   })
   
   output$map = renderLeaflet({
     leaflet() %>%
-      addProviderTiles(providers$CartoDB.Positron) %>% 
-      setView(lng = -73.98867, lat = 40.71765, zoom = 12) %>%
-      addCircleMarkers(data = pods_df(), radius = 1) %>% 
-      addPolygons(data = bikelanes_overlay()) %>% 
-      addPolygons(data = subway_route_overlay()) %>% 
-      addPolygons(data = path_route_overlay()) %>% 
-      addCircleMarkers(data = bikeracks_overlay(), radius = 1) %>% 
-      addCircleMarkers(data = subway_station_overlay(), radius = 1) %>% 
-      addCircleMarkers(data = path_station_overlay(), radius = 1) %>% 
+      addProviderTiles(providers$CartoDB.DarkMatter) %>% 
+      setView(lng = -73.98867, lat = 40.71765, zoom = 12)  %>% 
+      addPolylines(data = bikelanes_overlay(),
+                  color = fourcolor[["green"]],
+                  weight = 1) %>% 
+      addPolylines(data = subway_route_overlay(),
+                  color = fourcolor[["blue"]],
+                  weight = 2) %>% 
+      addPolylines(data = path_route_overlay(),
+                  color = fourcolor[["blue"]],
+                  weight = 2) %>% 
+      addCircleMarkers(data = bikeracks_overlay(), radius = 0.5,
+                       color = fourcolor[["green"]],
+                       opacity = 0.5,
+                       ) %>% 
+      addCircleMarkers(data = subway_station_overlay(), radius = 2,
+                       color = fourcolor[["blue"]]) %>% 
+      addCircleMarkers(data = path_station_overlay(), radius = 2,
+                       color = fourcolor[["blue"]]) %>% 
       # addPolygons(data = landuse_overlay(),
       #             stroke = F,
       #             fillOpacity = 0.3,
       #             color = ~landuse_bins(landuse_clean)) %>% 
       addPolygons(data = theftpcap_overlay(),
                   stroke = F,
-                  fillOpacity = 0.3,
+                  fillOpacity = 0.6,
                   color = ~theft_pcap_quintile(ne_wthftpop)) %>% 
       addPolygons(data = theft_total_overlay(),
                 stroke = F,
-                fillOpacity = 0.3,
-                color = ~theft_total_quintile(numpoints)) 
+                fillOpacity = 0.6,
+                color = ~theft_total_quintile(numpoints)) %>%
+      addCircleMarkers(data = pods_df(), radius = 6,
+                       opacity = 1,
+                       stroke = T,
+                       #color = "#434243",
+                       #color = "#FEFC8C"
+                       color = fourcolor[["yellow"]],
+      )
 
     })
   

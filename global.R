@@ -30,14 +30,16 @@ subway_stations <- readRDS(paste0(data_dir, "Subway_stations_clean.rds")) %>%
 subway_routes <- readRDS(paste0(data_dir, "Subway_routes_clean.rds"))%>% 
   st_set_crs(2263)
 
-PATH_stations <- readRDS(paste0(data_dir, "PATH_stations_clean.rds"))%>% 
-  st_transform(2263)%>% 
-  st_cast("POINT")
+PATH_stations <- readRDS(paste0(data_dir, "PATH_stations_clean.rds"))
 
 PATH_routes <- readRDS(paste0(data_dir, "PATH_routes_clean.rds"))%>% 
   st_transform(2263) #%>% 
   #st_sfc("geometry") %>% 
   #st_cast("MULTIPOLYGON")
+
+
+fourcolor <- c("yellow" ="#FEFC8C", "blue" = "#00E7FF", 
+               "pink" = "#FF9AF2", "green" = "#9BDF5E")
 
 
 

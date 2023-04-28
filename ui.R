@@ -2,9 +2,17 @@ ui <- fluidPage(
   
   titlePanel("Oonee Network Development Tool"),
   
+  setBackgroundColor(
+    color = "gray",
+    gradient = c("linear", "radial"),
+    direction = c("bottom", "top", "right", "left"),
+    shinydashboard = FALSE
+  ),
+  
   sidebarLayout(
     
     sidebarPanel = sidebarPanel(
+      width = 3,
       checkboxGroupInput(
         "pilot_onoff",
         "Oonee Program",
@@ -45,7 +53,9 @@ ui <- fluidPage(
       # ),
     ),
     mainPanel = mainPanel(
-      leafletOutput(outputId = 'map')
+      tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
+      leafletOutput(outputId = 'map'),
+      width = 9,
     )
     
   )
