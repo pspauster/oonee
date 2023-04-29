@@ -25,11 +25,6 @@ MN_stations <- readRDS(paste0(data_dir, "MN_stations.rds"))  %>%
 LIRR_stations <- readRDS(paste0(data_dir, "lirr_stations.rds"))  %>% 
   st_set_crs(st_crs(ntas_sf))
 
-match <- st_contains(ntas_sf, NJT_stations)
-
-ntas_sf$njt_counts <- lengths(st_intersects(ntas_sf, NJT_stations))
-
-ntas_sf$mn_counts <- lengths(st_intersects(ntas_sf, MN_stations))
 
 ntas_counts_transit <- ntas_sf %>% 
   mutate(njt = lengths(st_intersects(ntas_sf, NJT_stations)),
@@ -69,16 +64,30 @@ nta_theft_score <- ntas_sf %>%
 #jobs
 hi_jobs <- readRDS(paste0(data_dir, "highincomejobs.rds")) %>% mutate(cat = "High income") %>% 
   rename(jobs = ce03) %>% 
-  st_transform(4326)
+  st_transform(4326) %>% 
+  st_set_crs(st_crs(ntas_sf))
 
 mi_jobs <- readRDS(paste0(data_dir, "middleincomejobs.rds")) %>% mutate(cat = "Middle income") %>% 
-  rename(jobs = ce02) %>% 
-  st_transform(4326)
+  rename(jobs = ce02)%>% 
+  st_transform(4326) %>% 
+  st_set_crs(st_crs(ntas_sf))
 
 li_jobs <- readRDS(paste0(data_dir, "lowincomejobs.rds")) %>% mutate(cat = "Low income") %>% 
   rename(jobs = ce01) %>% 
-  st_transform(4326)
+  st_transform(4326) %>% 
+  st_set_crs(st_crs(ntas_sf))
 
+# a much easier way to do this would be with census tracts!
+nta_jobs_scores <- ntas_sf %>% 
+  st_join(hi_jobs, left = T) %>% 
+  rename(hi_jobs = jobs) %>% 
+  st_join(mi_jobs, left = T) %>% 
+  rename(mi_jobs = jobs) %>% 
+  st_join(li_jobs, left = T) %>% 
+  rename(li_jobs = jobs)
+
+nta_jobs_weighted <- nta_jobs_scores %>% 
+  mutate(jobs_score = 3*li_jobs + 2*mi_jobs + hi_jobs)
 
 #bike infrastructure
 bike_lanes <- readRDS(paste0(data_dir,"bike_lanes.rds"))
