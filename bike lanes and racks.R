@@ -15,6 +15,9 @@ bike_racks_clean <- bike_racks %>% janitor::clean_names()
 
 saveRDS(bike_racks_clean, "Data/clean/bike_racks.rds") #save as an R dataset to pull in later
 
+
+
+
 test <- read.socrata("https://data.cityofnewyork.us/resource/au7q-njtk.json")
 
 test2 <- read.socrata("https://data.cityofnewyork.us/resource/s5uu-3ajy.json")

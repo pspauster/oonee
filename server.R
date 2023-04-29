@@ -26,6 +26,26 @@ server <- function(input, output) {
     return(bike_racks_selected)
   })
   
+  jclanes_overlay <- reactive({
+    bike_lanes_selected <- 
+      bike_lanes_jc %>% 
+      filter(
+        "Bike lanes" %in% input$overlay_bike
+      ) %>% 
+      st_set_crs(6623)
+    return(bike_lanes_selected)
+  })
+  
+  jcracks_overlay <- reactive({
+    bike_racks_selected <- 
+      bike_racks_jc %>% 
+      filter(
+        "Bike racks" %in% input$overlay_bike
+      ) %>% 
+      st_set_crs(6623)
+    return(bike_racks_selected)
+  })
+  
   theft_pcap_quintile <- colorBin(
     c("#D1FCD4", "#8ECCB9", "#559B9E", "#566C7F", "#133F5A"), 
     thefts_pcap$ne_wthftpop, 
@@ -103,11 +123,71 @@ server <- function(input, output) {
   path_route_overlay <- reactive({
     pr_selected <- 
       PATH_routes %>% 
-      # filter(
-      #   "Routes" %in% input$overlay_subway
-      # ) %>% 
+       filter(
+         "Routes" %in% input$overlay_subway
+       ) %>% 
       st_set_crs(6623)
     return(pr_selected)
+  })
+  
+  lirr_route_overlay <- reactive({
+    selected <- 
+      LIRR_routes %>% 
+      filter(
+        "Routes" %in% input$overlay_rail
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  mn_route_overlay <- reactive({
+    selected <- 
+      MN_routes %>% 
+      filter(
+        "Routes" %in% input$overlay_rail
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  mn_station_overlay <- reactive({
+    selected <- 
+      MN_stations %>% 
+      filter(
+        "Stations" %in% input$overlay_rail
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  lirr_station_overlay <- reactive({
+    selected <- 
+      LIRR_stations %>% 
+      filter(
+        "Stations" %in% input$overlay_rail
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  lr_route_overlay <- reactive({
+    selected <- 
+      LR_routes %>% 
+      filter(
+        "Routes" %in% input$overlay_subway
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  lr_station_overlay <- reactive({
+    selected <- 
+      LR_stations %>% 
+      filter(
+        "Stations" %in% input$overlay_subway
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
   })
   
   output$map = renderLeaflet({
@@ -117,19 +197,41 @@ server <- function(input, output) {
       addPolylines(data = bikelanes_overlay(),
                   color = fourcolor[["green"]],
                   weight = 1) %>% 
+      addPolylines(data = jclanes_overlay(),
+                   color = fourcolor[["green"]],
+                   weight = 1) %>% 
       addPolylines(data = subway_route_overlay(),
                   color = fourcolor[["blue"]],
-                  weight = 2) %>% 
+                  weight = 1.5) %>% 
       addPolylines(data = path_route_overlay(),
                   color = fourcolor[["blue"]],
-                  weight = 2) %>% 
+                  weight = 1.5) %>% 
+      addPolylines(data = lirr_route_overlay(),
+                   color = fourcolor[["blue"]],
+                   weight = 2) %>% 
+      addPolylines(data = mn_route_overlay(),
+                   color = fourcolor[["blue"]],
+                   weight = 2) %>% 
+      addPolylines(data = lr_route_overlay(),
+                   color = fourcolor[["blue"]],
+                   weight = 2) %>% 
       addCircleMarkers(data = bikeracks_overlay(), radius = 0.5,
                        color = fourcolor[["green"]],
                        opacity = 0.5,
                        ) %>% 
+      addCircleMarkers(data = jcracks_overlay(), radius = 0.5,
+                       color = fourcolor[["green"]],
+                       opacity = 0.5,
+      ) %>% 
       addCircleMarkers(data = subway_station_overlay(), radius = 2,
                        color = fourcolor[["blue"]]) %>% 
+      addCircleMarkers(data = mn_station_overlay(), radius = 3,
+                       color = fourcolor[["blue"]]) %>% 
+      addCircleMarkers(data = lirr_station_overlay(), radius = 3,
+                       color = fourcolor[["blue"]]) %>% 
       addCircleMarkers(data = path_station_overlay(), radius = 2,
+                       color = fourcolor[["blue"]]) %>% 
+      addCircleMarkers(data = lr_station_overlay(), radius = 2,
                        color = fourcolor[["blue"]]) %>% 
       # addPolygons(data = landuse_overlay(),
       #             stroke = F,

@@ -20,6 +20,10 @@ oonee_pods <- readRDS(paste0(data_dir, "pod_locations.rds"))
 
 bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))
 
+jc_lanes <- readRDS(paste0(data_dir, "bike_lanes_jc.rds"))
+
+jc_racks <- readRDS(paste0(data_dir, "bike_racks_jc.rds"))
+
 thefts_pcap <- readRDS(paste0(data_dir, "bike_thefts_per_capita_clean.rds"))
 
 #landuse <- readRDS(paste0(data_dir, "mappluto.rds"))
@@ -30,13 +34,25 @@ subway_stations <- readRDS(paste0(data_dir, "Subway_stations_clean.rds")) %>%
 subway_routes <- readRDS(paste0(data_dir, "Subway_routes_clean.rds"))%>% 
   st_set_crs(2263)
 
-PATH_stations <- readRDS(paste0(data_dir, "PATH_stations_clean.rds"))
+PATH_stations <- readRDS(paste0(data_dir, "PATH_stations_clean.rds"))%>% 
+  st_transform(4326)
 
 PATH_routes <- readRDS(paste0(data_dir, "PATH_routes_clean.rds"))%>% 
-  st_transform(2263) #%>% 
-  #st_sfc("geometry") %>% 
-  #st_cast("MULTIPOLYGON")
+  st_transform(4326)
 
+LR_routes <- readRDS(paste0(data_dir, "NJ_transit_light_rail_routes_clean.rds")) %>% 
+  st_transform(4326)
+
+LR_stations <- readRDS(paste0(data_dir, "NJ_transit_light_rail_stations_clean,.rds")) %>% 
+  st_transform(4326)
+
+MN_routes <- readRDS(paste0(data_dir, "MN_routes.rds"))
+
+MN_stations <- readRDS(paste0(data_dir, "MN_stations.rds")) 
+
+LIRR_routes <- readRDS(paste0(data_dir, "lirr.rds"))
+
+LIRR_stations <- readRDS(paste0(data_dir, "lirr_stations.rds"))
 
 fourcolor <- c("yellow" ="#FEFC8C", "blue" = "#00E7FF", 
                "pink" = "#FF9AF2", "green" = "#9BDF5E")

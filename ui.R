@@ -45,6 +45,12 @@ ui <- fluidPage(
         selected = NULL,
         choices = c("Stations", "Routes")
       ),
+      checkboxGroupInput(
+        "overlay_rail",
+        "Commuter Rail",
+        selected = NULL,
+        choices = c("Stations", "Routes")
+      )
       # materialSwitch(
       #   "landuse_onoff",
       #   "Land Use",
