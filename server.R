@@ -333,3 +333,7 @@ server <- function(input, output) {
 
 }
 
+#add legend for jobs
+#make text color match the layer colors
+#darken sidebar box
+
