@@ -3,10 +3,44 @@ ui <- fluidPage(
   titlePanel("Oonee Network Development Tool"),
   
   setBackgroundColor(
-    color = "gray",
+    color = "#d2d2d2",
     gradient = c("linear", "radial"),
     direction = c("bottom", "top", "right", "left"),
     shinydashboard = FALSE
+  ),
+  
+  tags$head(tags$style("h2{
+                            color: black;
+                                 }
+                       .well {
+                            background-color: gray;
+                        }
+                       #pilot_onoff-label {
+                            color: #FEFC8C;
+                       }
+                       #pod_onoff-label {
+                            color: #FEFC8C;
+                       }
+                       #overlay_bike-label {
+                            color: #9BDF5E;
+                       }
+                       #overlay_theft-label {
+                            color: #8ECCB9;
+                       }
+                       #overlay_subway-label {
+                            color: #00E7FF;
+                       }
+                       #overlay_rail-label {
+                            color: #00E7FF;
+                       }
+                       #overlay_jobs-label {
+                            color: #FF9AF2;
+                       }
+                      span {
+                            color: white;
+                      }
+                       "
+    )
   ),
   
   sidebarLayout(
@@ -58,7 +92,10 @@ ui <- fluidPage(
       )
     ),
     mainPanel = mainPanel(
-      tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
+      tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}
+                                         .legend span {
+                                         color: black;
+                                         }"),
       leafletOutput(outputId = 'map'),
       width = 9,
     )
