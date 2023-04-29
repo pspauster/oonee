@@ -5,10 +5,10 @@ account: pspauster
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8833721
-bundleId: 7151879
+bundleId: 7151994
 url: https://pspauster.shinyapps.io/oonee_network_development_tool/
-when: 1682737324.52513
-lastSyncTime: 1682737324.52514
+when: 1682739918.84368
+lastSyncTime: 1682739918.8437
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: bike lanes and racks.R|bike thefts NYPD complaint data 2022.R|bike thefts per capita 2022.R|bike thefts total 2022.R|jc_biking.R|job_data.R|jobs scores.R|jobs.R|mappluto.R|Measures for Score.R|metro_north_data.R|NYPD Complaint Data.R|oonee sites.R|server-example.R|transit routes.R|ui-example.R
+ignoredFiles: bike lanes and racks.R|bike thefts NYPD complaint data 2022.R|bike thefts per capita 2022.R|bike thefts total 2022.R|job_data.R|jobs scores.R|jobs.R|mappluto.R|Measures for Score.R|metro_north_data.R|NYPD Complaint Data.R|oonee sites.R|server-example.R|transit routes.R|ui-example.R

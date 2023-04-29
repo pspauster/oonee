@@ -16,7 +16,13 @@ bike_racks_clean <- bike_racks %>% janitor::clean_names()
 saveRDS(bike_racks_clean, "Data/clean/bike_racks.rds") #save as an R dataset to pull in later
 
 
+library(geojsonio)
 
+#bike_lanes_jc <- geojson_sf("~/Downloads/bike-lanes-2020-division-of-transportation.geojson")
+saveRDS(bike_lanes_jc, "Data/clean/bike_lanes_jc.rds") #save as an R dataset to pull in later
+
+#bike_racks_jc <- geojson_sf("~/Downloads/bike-parking-locations-division-of-transportation.geojson")
+saveRDS(bike_racks_jc, "Data/clean/bike_racks_jc.rds") #save as an R dataset to pull in later
 
 test <- read.socrata("https://data.cityofnewyork.us/resource/au7q-njtk.json")
 

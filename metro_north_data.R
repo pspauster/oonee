@@ -14,9 +14,9 @@ lirr <- read.socrata("https://data.ny.gov/resource/2vcb-zrh4.csv") %>%
 lirr_stations <- read_csv("https://data.ny.gov/api/views/wxmd-5cpm/rows.csv?accessType=DOWNLOAD") %>% 
   st_as_sf(wkt = "the_geom")
 
-njt_routes <- geojson_sf("/Users/patrickspauster/Downloads/Rail_Lines_of_NJ_Transit.geojson")
+#njt_routes <- geojson_sf("/Users/patrickspauster/Downloads/Rail_Lines_of_NJ_Transit.geojson")
 
-njt_stations <- geojson_sf("/Users/patrickspauster/Downloads/NJ_Passenger_Rail_Stations.geojson")
+#njt_stations <- geojson_sf("/Users/patrickspauster/Downloads/NJ_Passenger_Rail_Stations.geojson")
 
 
 saveRDS(lirr, "Data/clean/lirr.rds")
