@@ -50,13 +50,12 @@ ui <- fluidPage(
         "Commuter Rail",
         selected = NULL,
         choices = c("Stations", "Routes")
+      ),
+      selectInput(
+        "overlay_jobs",
+        "Jobs",
+        choices = c("-","Total", "High income", "Middle income", "Low income")
       )
-      # materialSwitch(
-      #   "landuse_onoff",
-      #   "Land Use",
-      #   value = FALSE,
-      #   status = "primary"
-      # ),
     ),
     mainPanel = mainPanel(
       tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),

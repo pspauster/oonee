@@ -54,10 +54,34 @@ LIRR_routes <- readRDS(paste0(data_dir, "lirr.rds"))
 
 LIRR_stations <- readRDS(paste0(data_dir, "lirr_stations.rds"))
 
+NJT_routes <- readRDS(paste0(data_dir, "njt_routes.rds"))
+
+NJT_stations <- readRDS(paste0(data_dir, "njt_stations.rds")) %>% 
+  filter(str_detect(RAIL_LINE, "Light Rail") == F, str_detect(RAIL_LINE, "PATH")== F)
+
 fourcolor <- c("yellow" ="#FEFC8C", "blue" = "#00E7FF", 
                "pink" = "#FF9AF2", "green" = "#9BDF5E")
 
+hi_jobs <- readRDS(paste0(data_dir, "highincomejobs.rds")) %>% mutate(cat = "High income") %>% 
+  rename(jobs = ce03) %>% 
+  st_transform(4326)
 
+mi_jobs <- readRDS(paste0(data_dir, "middleincomejobs.rds")) %>% mutate(cat = "Middle income") %>% 
+  rename(jobs = ce02) %>% 
+  st_transform(4326)
+
+li_jobs <- readRDS(paste0(data_dir, "highincomejobs.rds")) %>% mutate(cat = "Low income") %>% 
+  rename(jobs = ce03) %>% 
+  st_transform(4326)
+
+total_jobs <- left_join(as.data.frame(hi_jobs), as.data.frame(mi_jobs), by = "geometry") %>% 
+  left_join(as.data.frame(li_jobs), by = "geometry") %>% 
+  mutate(cat = "Total",
+                                                                jobs = jobs.x + jobs.y + jobs) %>% 
+  st_as_sf()
+
+jobs_long <- bind_rows(hi_jobs, mi_jobs, li_jobs, total_jobs) %>% 
+  filter(jobs != 0)
 
 
 

@@ -28,7 +28,7 @@ server <- function(input, output) {
   
   jclanes_overlay <- reactive({
     bike_lanes_selected <- 
-      bike_lanes_jc %>% 
+      jc_lanes %>% 
       filter(
         "Bike lanes" %in% input$overlay_bike
       ) %>% 
@@ -38,7 +38,7 @@ server <- function(input, output) {
   
   jcracks_overlay <- reactive({
     bike_racks_selected <- 
-      bike_racks_jc %>% 
+      jc_racks %>% 
       filter(
         "Bike racks" %in% input$overlay_bike
       ) %>% 
@@ -190,10 +190,42 @@ server <- function(input, output) {
     return(selected)
   })
   
+  njt_route_overlay <- reactive({
+    selected <- 
+      NJT_routes %>% 
+      filter(
+        "Routes" %in% input$overlay_rail
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  njt_station_overlay <- reactive({
+    selected <- 
+      NJT_stations %>% 
+      filter(
+        "Stations" %in% input$overlay_rail
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  jobs_overlay <- reactive({
+    selected <- 
+      jobs_long %>% 
+      filter(
+        cat == input$overlay_jobs,
+        jobs != 0
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
   output$map = renderLeaflet({
     leaflet() %>%
       addProviderTiles(providers$CartoDB.DarkMatter) %>% 
       setView(lng = -73.98867, lat = 40.71765, zoom = 12)  %>% 
+      
       addPolylines(data = bikelanes_overlay(),
                   color = fourcolor[["green"]],
                   weight = 1) %>% 
@@ -214,7 +246,11 @@ server <- function(input, output) {
                    weight = 2) %>% 
       addPolylines(data = lr_route_overlay(),
                    color = fourcolor[["blue"]],
+                   weight = 1.5) %>% 
+      addPolylines(data = njt_route_overlay(),
+                   color = fourcolor[["blue"]],
                    weight = 2) %>% 
+      
       addCircleMarkers(data = bikeracks_overlay(), radius = 0.5,
                        color = fourcolor[["green"]],
                        opacity = 0.5,
@@ -233,18 +269,25 @@ server <- function(input, output) {
                        color = fourcolor[["blue"]]) %>% 
       addCircleMarkers(data = lr_station_overlay(), radius = 2,
                        color = fourcolor[["blue"]]) %>% 
-      # addPolygons(data = landuse_overlay(),
-      #             stroke = F,
-      #             fillOpacity = 0.3,
-      #             color = ~landuse_bins(landuse_clean)) %>% 
+      addCircleMarkers(data = njt_station_overlay(), radius = 3,
+                       color = fourcolor[["blue"]]) %>% 
+
       addPolygons(data = theftpcap_overlay(),
                   stroke = F,
                   fillOpacity = 0.6,
-                  color = ~theft_pcap_quintile(ne_wthftpop)) %>% 
+                  color = ~theft_pcap_quintile(ne_wthftpop)) %>%
       addPolygons(data = theft_total_overlay(),
                 stroke = F,
                 fillOpacity = 0.6,
                 color = ~theft_total_quintile(numpoints)) %>%
+      
+      addCircleMarkers(
+        data = jobs_overlay(),
+        opacity = 0.5,
+        color = fourcolor[["pink"]],
+        radius = ~sqrt(jobs/100)
+      ) %>% 
+      
       addCircleMarkers(data = pods_df(), radius = 6,
                        opacity = 1,
                        stroke = T,
@@ -279,6 +322,10 @@ server <- function(input, output) {
                     opacity = 1
           )
     }
+    
+
+    
+    
   })
   
 
