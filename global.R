@@ -14,9 +14,10 @@ library(shinyjs)
 
 data_dir <- "Data/clean/"
 
-bike_lanes <- readRDS(paste0(data_dir,"bike_lanes.rds"))
 
 oonee_pods <- readRDS(paste0(data_dir, "pod_locations.rds"))
+
+bike_lanes <- readRDS(paste0(data_dir,"bike_lanes.rds"))
 
 bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))
 
