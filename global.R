@@ -68,8 +68,8 @@ mi_jobs <- readRDS(paste0(data_dir, "middleincomejobs.rds")) %>% mutate(cat = "M
   rename(jobs = ce02) %>% 
   st_transform(4326)
 
-li_jobs <- readRDS(paste0(data_dir, "highincomejobs.rds")) %>% mutate(cat = "Low income") %>% 
-  rename(jobs = ce03) %>% 
+li_jobs <- readRDS(paste0(data_dir, "lowincomejobs.rds")) %>% mutate(cat = "Low income") %>% 
+  rename(jobs = ce01) %>% 
   st_transform(4326)
 
 total_jobs <- left_join(as.data.frame(hi_jobs), as.data.frame(mi_jobs), by = "geometry") %>% 
@@ -79,7 +79,7 @@ total_jobs <- left_join(as.data.frame(hi_jobs), as.data.frame(mi_jobs), by = "ge
   st_as_sf()
 
 jobs_long <- bind_rows(hi_jobs, mi_jobs, li_jobs, total_jobs) %>% 
-  filter(jobs != 0)
+  filter(jobs >= 250)
 
 
 

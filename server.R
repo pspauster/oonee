@@ -224,7 +224,7 @@ server <- function(input, output) {
   output$map = renderLeaflet({
     leaflet() %>%
       addProviderTiles(providers$CartoDB.DarkMatter) %>% 
-      setView(lng = -73.98867, lat = 40.71765, zoom = 12)  %>% 
+      setView(lng = -73.98867, lat = 40.72165, zoom = 13)  %>% 
       
       addPolylines(data = bikelanes_overlay(),
                   color = fourcolor[["green"]],
@@ -323,17 +323,36 @@ server <- function(input, output) {
           )
     }
     
-    
-    
-
-    
-    
+    if (input$overlay_jobs != "-") {
+      
+      jobs <- jobs_overlay()
+      
+      labels <- c(10, 20, 50)
+      
+      proxy %>% 
+        addLegendSize(
+          values = sqrt(jobs$jobs/100),
+          color = fourcolor[["pink"]],
+          fillColor = fourcolor[["pink"]],
+          opacity = .5,
+          title = 'Jobs',
+          shape = 'circle',
+          orientation = 'horizontal',
+          breaks = c(1, 2, 3),
+          position = "topright",
+          numberFormat = function(x){ prettyNum((x*100)^2,big.mark=",",scientific=FALSE, digits=1)}
+        )
+        
+    }
+     
   })
   
 
 }
 
-#add legend for jobs
-#make text color match the layer colors
-#darken sidebar box
 
+#about page
+#filter southern NJ PATH stops
+#index
+#year for bike theft
+#thefts per thousand people
