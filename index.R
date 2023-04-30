@@ -96,3 +96,6 @@ bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))
 
 #bike commuters
 
+bike_commuters <- readRDS(paste0(data_dir, "bike_commuters_by_census_tract_clean_NY_and_NJ.rds")) %>% 
+  janitor::row_to_names(row_number = 1)
+
