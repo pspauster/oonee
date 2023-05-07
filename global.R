@@ -82,6 +82,22 @@ total_jobs <- left_join(as.data.frame(hi_jobs), as.data.frame(mi_jobs), by = "ge
 jobs_long <- bind_rows(hi_jobs, mi_jobs, li_jobs, total_jobs) %>% 
   filter(jobs >= 250)
 
+index <- readRDS(paste0(data_dir, "index.rds")) %>% 
+  pivot_longer(cols = c("bikeinfra_score_pct", "bikers_score_pct", "jobs_score_pct", "theft_score_pct",    
+                        "transit_score_pct", "total_score"),
+               names_to = "cat",
+               values_to = "score") %>% 
+  mutate(score_layer = case_when(cat == "total_score" ~"Total score",
+                   cat == "transit_score_pct" ~"Transit score",
+                   cat == "bikeinfra_score_pct" ~"Bike infrastructre score",
+                   cat == "bikers_score_pct" ~"Bike commuter score",
+                   cat == "theft_score_pct" ~"Bike theft score",
+                   cat == "jobs_score_pct" ~"Jobs score"))
+
+index_total <- index %>% filter(score_layer == "Total score")
+
+index_long <- index %>% filter(score_layer != "Total score")
+
 
 
 

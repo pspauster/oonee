@@ -36,6 +36,9 @@ ui <- fluidPage(
                        #overlay_jobs-label {
                             color: #FF9AF2;
                        }
+                       #overlay_score-label {
+                            color: white;
+                       }                       
                       span {
                             color: white;
                       }
@@ -47,6 +50,11 @@ ui <- fluidPage(
     
     sidebarPanel = sidebarPanel(
       width = 3,
+      checkboxInput(
+        "overlay_total",
+        "Network Development Index Total Score",
+        value = T,
+      ),
       checkboxGroupInput(
         "pilot_onoff",
         "Oonee Program",
@@ -89,6 +97,12 @@ ui <- fluidPage(
         "overlay_jobs",
         "Jobs",
         choices = c("-","Total", "High income", "Middle income", "Low income")
+      ),
+      checkboxGroupInput(
+        "overlay_score",
+        "Network Development Index Components",
+        selected = NULL,
+        choices = c("Transit score", "Bike infrastructre score", "Bike commuter score", "Bike theft score", "Jobs score")
       )
     ),
     mainPanel = mainPanel(

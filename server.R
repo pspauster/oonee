@@ -221,6 +221,36 @@ server <- function(input, output) {
     return(selected)
   })
   
+  score_overlay <- reactive({
+    selected <- 
+      index_long %>% 
+      filter(
+        score_layer %in% input$overlay_score,
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  score_total_overlay <- reactive({
+    selected <- 
+      index_total %>% 
+      filter(
+        input$overlay_total == T,
+      ) %>%
+      st_set_crs(6623)
+    return(selected)
+  })
+  
+  score_total_continuous <- colorNumeric(
+    palette = "Blues", #c("#D1FCD4", "#8ECCB9", "#559B9E", "#566C7F", "#133F5A")
+    index_total$score, 
+  )
+  
+  score_component_continuous <- colorNumeric(
+    palette = "Blues", #c("#D1FCD4", "#8ECCB9", "#559B9E", "#566C7F", "#133F5A")
+    index_long$score, 
+  )
+  
   output$map = renderLeaflet({
     leaflet() %>%
       addProviderTiles(providers$CartoDB.DarkMatter) %>% 
@@ -280,6 +310,14 @@ server <- function(input, output) {
                 stroke = F,
                 fillOpacity = 0.6,
                 color = ~theft_total_quintile(numpoints)) %>%
+      addPolygons(data = score_overlay(),
+                  stroke = F,
+                  fillOpacity = 0.6,
+                  color = ~score_component_continuous(score)) %>%
+      addPolygons(data = score_total_overlay(),
+                  stroke = F,
+                  fillOpacity = 0.6,
+                  color = ~score_total_continuous(score)) %>%
       
       addCircleMarkers(
         data = jobs_overlay(),

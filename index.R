@@ -26,15 +26,20 @@ LIRR_stations <- readRDS(paste0(data_dir, "lirr_stations.rds"))  %>%
   st_set_crs(st_crs(ntas_sf))
 
 
-ntas_counts_transit <- ntas_sf %>% 
+nta_transit_score <- ntas_sf %>% 
   mutate(njt = lengths(st_intersects(ntas_sf, NJT_stations)),
          mn = lengths(st_intersects(ntas_sf, MN_stations)),
          lirr = lengths(st_intersects(ntas_sf, LIRR_stations)),
          subway = lengths(st_intersects(ntas_sf, subway_stations)), #adjust this for hubs
-         transit_score = njt*3 + mn*3 + lirr*3 + subway
-  )
+         transit_score = njt*3 + mn*3 + lirr*3 + subway,
+         transit_score_pct = percent_rank(transit_score)
+  ) %>% 
+  as.data.frame() %>% 
+  select(ntaname, transit_score_pct)
 
 hist(ntas_counts_transit$transit_score)
+
+
 
 
 #theft
@@ -53,43 +58,30 @@ pop20 <- get_decennial(
 pop_nta <- ntas_to_tracts %>% 
   left_join(pop20, by = c("geoid" = "GEOID")) %>% 
   group_by(ntaname) %>% 
-  summarize(population = sum(value))
+  summarize(population = sum(value, na.rm = T))
 
 nta_theft_score <- ntas_sf %>% 
   left_join(pop_nta, by = "ntaname") %>% 
   mutate(thefts = lengths(st_intersects(ntas_sf, thefts_raw)),
-         thefts_per = thefts/population
-  )
+         thefts_per = thefts/population,
+         theft_score_pct = percent_rank(thefts_per)
+  ) %>% 
+  as.data.frame() %>% 
+  select(ntaname, theft_score_pct)
 
 #jobs
-hi_jobs <- readRDS(paste0(data_dir, "highincomejobs.rds")) %>% mutate(cat = "High income") %>% 
-  rename(jobs = ce03) %>% 
-  st_transform(4326) %>% 
-  st_set_crs(st_crs(ntas_sf))
 
-mi_jobs <- readRDS(paste0(data_dir, "middleincomejobs.rds")) %>% mutate(cat = "Middle income") %>% 
-  rename(jobs = ce02)%>% 
-  st_transform(4326) %>% 
-  st_set_crs(st_crs(ntas_sf))
+jobs <- readRDS(paste0(data_dir, "jobs_with_censustracts.rds")) %>% 
+  mutate(geoid = as.character(str_sub(id, 1, -5))) %>% 
+  filter(!startsWith(geoid, "34"))
 
-li_jobs <- readRDS(paste0(data_dir, "lowincomejobs.rds")) %>% mutate(cat = "Low income") %>% 
-  rename(jobs = ce01) %>% 
-  st_transform(4326) %>% 
-  st_set_crs(st_crs(ntas_sf))
-
-# a much easier way to do this would be with census tracts!
-# nta_jobs_scores <- ntas_sf %>% 
-#   st_join(hi_jobs, left = T) %>% 
-#   rename(hi_jobs = jobs) %>% 
-#   st_join(mi_jobs, left = T) %>% 
-#   rename(mi_jobs = jobs) %>% 
-#   st_join(li_jobs, left = T) %>% 
-#   rename(li_jobs = jobs)
-
-nta_jobs_scores
-
-nta_jobs_weighted <- nta_jobs_scores %>% 
-  mutate(jobs_score = 3*li_jobs + 2*mi_jobs + hi_jobs)
+nta_jobs_score <- jobs %>% 
+  left_join(ntas_to_tracts, jobs, by = "geoid") %>% 
+  group_by(ntaname) %>% 
+  summarize(jobs_score = 3*sum(ce01, na.rm = T) + 2*sum(ce02, na.rm = T) + sum(ce02, na.rm = T)) %>% 
+  as.data.frame() %>% 
+  mutate(jobs_score_pct = percent_rank(jobs_score)) %>% 
+  select(ntaname, jobs_score_pct)
 
 #bike infrastructure
 bike_lanes <- readRDS(paste0(data_dir,"bike_lanes.rds")) %>% 
@@ -105,9 +97,15 @@ bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))  %>%
 
 racks_ntas <- ntas_sf %>% 
   mutate(no_racks = lengths(st_intersects(ntas_sf, bike_racks))
-  )
+  ) %>% 
+  select(ntaname, no_racks) %>% 
+  as.data.frame()
 
-nta_bike_score <- left_join(ntas_sf, as.data.frame(ntas_bikelanes), by = "ntaname")
+nta_bike_score <- left_join(ntas_sf, as.data.frame(ntas_bikelanes), by = "ntaname") %>% 
+  left_join(racks_ntas, by = "ntaname") %>% 
+  mutate(bikeinfra_score_pct = percent_rank(percent_rank(bike_lane_length)/2 + percent_rank(no_racks))) %>% 
+  as.data.frame() %>% 
+  select(ntaname, bikeinfra_score_pct)
 
 #bike commuters
 
@@ -117,9 +115,37 @@ bike_commuters <- readRDS(paste0(data_dir, "bike_commuters_by_census_tract_clean
   mutate(estimate_total_bicycle = as.integer(estimate_total_bicycle)) %>% 
   separate(geography, into = c("stub","geoid"), sep = "US")
 
-bikes_to_tracts <- left_join(ntas_to_tracts, bike_commuters, by = "geoid") %>% 
+nta_bikers_score <- left_join(ntas_to_tracts, bike_commuters, by = "geoid") %>% 
   group_by(ntaname) %>% 
-  summarize(bike_commuters = sum(estimate_total_bicycle))
+  summarize(bike_commuters = sum(estimate_total_bicycle, na.rm = T)) %>% 
+  mutate(bikers_score_pct = percent_rank(bike_commuters)) %>% 
+  as.data.frame() %>% 
+  select(ntaname, bikers_score_pct)
+
+
+# compile 
+
+index_layer <- ntas_sf %>% 
+  left_join(nta_bike_score, by = "ntaname") %>% 
+  left_join(nta_bikers_score, by = "ntaname") %>% 
+  left_join(nta_jobs_score, by = "ntaname") %>% 
+  left_join(nta_theft_score, by = "ntaname") %>% 
+  left_join(nta_transit_score, by = "ntaname") %>% 
+  group_by(ntaname) %>% 
+  mutate(total_score = sum(bikeinfra_score_pct  , bikers_score_pct  , jobs_score_pct  , theft_score_pct  ,     
+                            transit_score_pct, na.rm = T)) %>% 
+  ungroup() %>% 
+  arrange(desc(total_score)) %>% 
+  mutate(rank = row_number())
+
+hist(index_layer$total_score)
+
+write_rds(index_layer, paste0(data_dir, "index.rds"))
+
+  
+
+
+
 
 
 
