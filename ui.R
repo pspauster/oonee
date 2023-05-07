@@ -56,7 +56,7 @@ ui <- fluidPage(
         ),
       checkboxGroupInput(
         "pod_onoff",
-        "Pod Types",
+        "Station Types",
         selected = unique(oonee_pods$type),
         choices = unique(oonee_pods$type),
         inline = TRUE

@@ -78,24 +78,49 @@ li_jobs <- readRDS(paste0(data_dir, "lowincomejobs.rds")) %>% mutate(cat = "Low 
   st_set_crs(st_crs(ntas_sf))
 
 # a much easier way to do this would be with census tracts!
-nta_jobs_scores <- ntas_sf %>% 
-  st_join(hi_jobs, left = T) %>% 
-  rename(hi_jobs = jobs) %>% 
-  st_join(mi_jobs, left = T) %>% 
-  rename(mi_jobs = jobs) %>% 
-  st_join(li_jobs, left = T) %>% 
-  rename(li_jobs = jobs)
+# nta_jobs_scores <- ntas_sf %>% 
+#   st_join(hi_jobs, left = T) %>% 
+#   rename(hi_jobs = jobs) %>% 
+#   st_join(mi_jobs, left = T) %>% 
+#   rename(mi_jobs = jobs) %>% 
+#   st_join(li_jobs, left = T) %>% 
+#   rename(li_jobs = jobs)
+
+nta_jobs_scores
 
 nta_jobs_weighted <- nta_jobs_scores %>% 
   mutate(jobs_score = 3*li_jobs + 2*mi_jobs + hi_jobs)
 
 #bike infrastructure
-bike_lanes <- readRDS(paste0(data_dir,"bike_lanes.rds"))
+bike_lanes <- readRDS(paste0(data_dir,"bike_lanes.rds")) %>% 
+  st_set_crs(st_crs(ntas_sf))
 
-bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))
+ntas_bikelanes <- st_intersection(ntas_sf, bike_lanes) %>% 
+  group_by(ntaname) %>% 
+  summarize(geometry = st_union(the_geom),
+            bike_lane_length = st_length(geometry))
+
+bike_racks <-readRDS(paste0(data_dir, "bike_racks.rds"))  %>% 
+  st_set_crs(st_crs(ntas_sf))
+
+racks_ntas <- ntas_sf %>% 
+  mutate(no_racks = lengths(st_intersects(ntas_sf, bike_racks))
+  )
+
+nta_bike_score <- left_join(ntas_sf, as.data.frame(ntas_bikelanes), by = "ntaname")
 
 #bike commuters
 
 bike_commuters <- readRDS(paste0(data_dir, "bike_commuters_by_census_tract_clean_NY_and_NJ.rds")) %>% 
-  janitor::row_to_names(row_number = 1)
+  janitor::row_to_names(row_number = 1) %>% 
+  janitor::clean_names() %>% 
+  mutate(estimate_total_bicycle = as.integer(estimate_total_bicycle)) %>% 
+  separate(geography, into = c("stub","geoid"), sep = "US")
+
+bikes_to_tracts <- left_join(ntas_to_tracts, bike_commuters, by = "geoid") %>% 
+  group_by(ntaname) %>% 
+  summarize(bike_commuters = sum(estimate_total_bicycle))
+
+
+
 

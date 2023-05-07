@@ -17,10 +17,12 @@ pod_locations_clean <- pod_locations %>%
   mutate(pilot = case_when(street_1 == "15 Journal Square Plaza" ~ "Permanent", #made a variable so we can sort by pilot/permanent
                            street_1 == "650 Atlantic Ave" ~ "Permanent",
                            street_1 == "89 E 42nd St" ~ "Permanent",
+                           street_1 == "641 8th Ave" ~ "Permanent",
                            T ~ "Pilot"),
-         type = case_when(street_1 == "15 Journal Square Plaza" ~ "Pod", #made a variable to sort by pod/min
-                           street_1 == "650 Atlantic Ave" ~ "Pod",
-                           T ~ "Mini")
+         type = case_when(street_1 == "15 Journal Square Plaza" ~ "Large", #made a variable to sort by pod/min
+                           street_1 == "650 Atlantic Ave" ~ "Large",
+                            street_1 == "641 8th Ave" ~ "Large",
+                           T ~ "Small")
          ) %>% 
   st_as_sf(coords = c("longitude", "latitude")) #this makes it into a simple features (spatial) object
 
