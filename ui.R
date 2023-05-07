@@ -11,6 +11,10 @@ ui <- fluidPage(
   
   tags$head(tags$style("h2{
                             color: black;
+                                }
+                        h3{
+                            color: white;
+                            font-size: 14px;
                                  }
                        .well {
                             background-color: gray;
@@ -41,6 +45,11 @@ ui <- fluidPage(
                        }                       
                       span {
                             color: white;
+                            font-size: 12px;
+                      }
+                      p {
+                            color: #FEFC8C;
+                            font-size: 12px;
                       }
                        "
     )
@@ -49,7 +58,16 @@ ui <- fluidPage(
   sidebarLayout(
     
     sidebarPanel = sidebarPanel(
-      width = 3,
+      width = 4,
+
+      div(
+        tags$p(
+        "Use this interactive map to identify locations that would best support secure bicycle parking. Toggle the evaluation criteria below to see how different metrics influence bicycle parking needs and feasibility. The Network Development Index Components combine these metrics to create scores that can be used to evaluate potential locations for Oonee stations. Neighborhoods with higher scores may be more likely to host successful Oonee stations, while neighborhoods with lower scores may be more challenging."
+        )
+        ),
+      div(
+        tags$h3("Neighborhood Bike Parking Scores")
+      ),
       checkboxInput(
         "overlay_total",
         "Network Development Index Total Score",
@@ -102,16 +120,23 @@ ui <- fluidPage(
         "overlay_score",
         "Network Development Index Components",
         selected = NULL,
-        choices = c("Transit score", "Bike infrastructre score", "Bike commuter score", "Bike theft score", "Jobs score")
+        choices = c("Transit score", "Bike infrastructure score", "Bike commuter score", "Bike theft score", "Jobs score")
       )
     ),
     mainPanel = mainPanel(
-      tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}
-                                         .legend span {
-                                         color: black;
-                                         }"),
-      leafletOutput(outputId = 'map'),
-      width = 9,
+      tabsetPanel(
+        tabPanel(
+          "Map",
+          tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}
+                                             .legend span {
+                                             color: black;
+                                             }"),
+          leafletOutput(outputId = 'map'),
+          width = 9,
+        ),
+        tabPanel("About",
+                 includeMarkdown("About.md"))
+      )
     )
     
   )

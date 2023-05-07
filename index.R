@@ -22,6 +22,9 @@ NJT_stations <- readRDS(paste0(data_dir, "NJT_stations.rds")) %>%
 MN_stations <- readRDS(paste0(data_dir, "MN_stations.rds"))  %>% 
   st_set_crs(st_crs(ntas_sf))
 
+PATH_stations <- readRDS(paste0(data_dir, "PATH_stations_clean.rds"))%>% 
+  st_set_crs(st_crs(ntas_sf))
+
 LIRR_stations <- readRDS(paste0(data_dir, "lirr_stations.rds"))  %>% 
   st_set_crs(st_crs(ntas_sf))
 
@@ -30,8 +33,9 @@ nta_transit_score <- ntas_sf %>%
   mutate(njt = lengths(st_intersects(ntas_sf, NJT_stations)),
          mn = lengths(st_intersects(ntas_sf, MN_stations)),
          lirr = lengths(st_intersects(ntas_sf, LIRR_stations)),
+         path = lengths(st_intersects(ntas_sf, PATH_stations)),
          subway = lengths(st_intersects(ntas_sf, subway_stations)), #adjust this for hubs
-         transit_score = njt*3 + mn*3 + lirr*3 + subway,
+         transit_score = njt*3 + mn*3 + lirr*3 + subway + path,
          transit_score_pct = percent_rank(transit_score)
   ) %>% 
   as.data.frame() %>% 
@@ -72,13 +76,12 @@ nta_theft_score <- ntas_sf %>%
 #jobs
 
 jobs <- readRDS(paste0(data_dir, "jobs_with_censustracts.rds")) %>% 
-  mutate(geoid = as.character(str_sub(id, 1, -5))) %>% 
-  filter(!startsWith(geoid, "34"))
+  mutate(geoid = as.character(zone_id))
 
 nta_jobs_score <- jobs %>% 
   left_join(ntas_to_tracts, jobs, by = "geoid") %>% 
   group_by(ntaname) %>% 
-  summarize(jobs_score = 3*sum(ce01, na.rm = T) + 2*sum(ce02, na.rm = T) + sum(ce02, na.rm = T)) %>% 
+  summarize(jobs_score = 3*sum(inc_low, na.rm = T) + 2*sum(inc_med, na.rm = T) + sum(inc_high, na.rm = T)) %>% 
   as.data.frame() %>% 
   mutate(jobs_score_pct = percent_rank(jobs_score)) %>% 
   select(ntaname, jobs_score_pct)

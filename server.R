@@ -46,6 +46,7 @@ server <- function(input, output) {
     return(bike_racks_selected)
   })
   
+  
   theft_pcap_quintile <- colorBin(
     c("#D1FCD4", "#8ECCB9", "#559B9E", "#566C7F", "#133F5A"), 
     thefts_pcap$ne_wthftpop, 
@@ -241,13 +242,23 @@ server <- function(input, output) {
     return(selected)
   })
   
+  green_ramp <- c("#2B7446",
+                  "#379045",
+                  "#48AB43",
+                  "#6FC550",
+                  "#9BDF5E",
+                  "#BEE572",
+                  "#DBEB86",
+                  "#F0ED9B",
+                  "#ececec")
+  
   score_total_continuous <- colorNumeric(
-    palette = "Blues", #c("#D1FCD4", "#8ECCB9", "#559B9E", "#566C7F", "#133F5A")
+    palette = rev(green_ramp),
     index_total$score, 
   )
   
   score_component_continuous <- colorNumeric(
-    palette = "Blues", #c("#D1FCD4", "#8ECCB9", "#559B9E", "#566C7F", "#133F5A")
+    palette = rev(green_ramp),
     index_long$score, 
   )
   
@@ -359,6 +370,28 @@ server <- function(input, output) {
                     labFormat = labelFormat(prefix = ""),
                     opacity = 1
           )
+    }
+    
+    if (input$overlay_total == T) {
+      proxy %>% 
+        addLegend(data = score_total_overlay(), 
+                  "bottomright", 
+                  pal = score_total_continuous, values = ~score,
+                  title = "Total Score",
+                  labFormat = labelFormat(prefix = ""),
+                  opacity = 1
+        )
+    }
+    
+    if (length(input$overlay_score>0)) {
+      proxy %>% 
+        addLegend(data = score_overlay(), 
+                  "bottomright", 
+                  pal = score_component_continuous, values = ~score,
+                  title = "Component Score",
+                  labFormat = labelFormat(prefix = ""),
+                  opacity = 1
+        )
     }
     
     if (input$overlay_jobs != "-") {
