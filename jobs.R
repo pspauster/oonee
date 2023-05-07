@@ -23,4 +23,12 @@ saveRDS(highincomejobs, "Data/clean/highincomejobs.rds")
 
 jobs_censustract <- read.csv("/Users/evanmancini/Documents/Important Stuff/Education/NYU/Courses/8 - Spring 2023/Capstone 2/Existing Conditions Work/jobswithcensustracts.csv")
 
-jobs_censustract_clean <- jobs_censustract %>% janitor:clean_names()
+jobs_censustract_clean <- jobs_censustract %>% janitor::clean_names()
+
+saveRDS(jobs_censustract_clean, "Data/clean/jobs_with_censustracts.rds")
+
+jobs_censustract2 <- read.csv("/Users/evanmancini/Documents/Important Stuff/Education/NYU/Courses/8 - Spring 2023/Capstone 2/nn_downlaod/lodes_jobs_data.csv")
+
+jobs_censustract2_clean <- jobs_censustract2 %>% janitor::clean_names()
+
+saveRDS(jobs_censustract2_clean, "Data/clean/jobs_with_censustracts.rds")
