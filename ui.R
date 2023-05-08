@@ -47,7 +47,7 @@ ui <- fluidPage(
                             color: white;
                             font-size: 12px;
                       }
-                      p {
+                      h4 {
                             color: #FEFC8C;
                             font-size: 12px;
                       }
@@ -61,7 +61,7 @@ ui <- fluidPage(
       width = 4,
 
       div(
-        tags$p(
+        tags$h4(
         "Use this interactive map to identify locations that would best support secure bicycle parking. Toggle the evaluation criteria below to see how different metrics influence bicycle parking needs and feasibility. The Network Development Index Components combine these metrics to create scores that can be used to evaluate potential locations for Oonee stations. Neighborhoods with higher scores may be more likely to host successful Oonee stations, while neighborhoods with lower scores may be more challenging."
         )
         ),
