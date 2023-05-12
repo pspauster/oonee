@@ -1,6 +1,6 @@
 # About
 
-The network development framework tool uses transit, bicycle theft, employment, and bicycle infrastructure data to help Oonee identify areas for expansion and planning in the New York City metropolitan area. The tool creates a score that weighs these criteria, revealing locations where secure bicycle parking will thrive. By using this tool, Oonee can strengthen public-private partnerships and add value to the station planning process with collaborators.
+The network development framework tool uses transit, bicycle theft, employment, and bicycle infrastructure data to help Oonee identify areas for expansion and planning in the New York City metropolitan area. The tool creates a score that weighs these criteria, revealing neighborhoods where secure bicycle parking could thrive. By using this tool, Oonee can strengthen public-private partnerships and add value to the station planning process with collaborators.
 
 # Data sources
 
@@ -20,7 +20,7 @@ The network development framework tool uses transit, bicycle theft, employment, 
 
 -   [Long Island Rail Road - NYC Mass Transit Spatial Layers Archive](https://www.baruch.cuny.edu/confluence/display/geoportal/NYC+Mass+Transit+Spatial+Layers+Archive)
 
--   NJT Commuter Rail Stations
+-   [NJT Commuter Rail Stations](https://hub.arcgis.com/maps/e6701817be974795aecc7f7a8cc42f79) - New Jersey Transit
 
 ## Bike Thefts
 
@@ -48,11 +48,11 @@ The network development framework tool uses transit, bicycle theft, employment, 
 
 The Network Development Index is created from five key indicators that, based on the Capstone team's research, may be good candidates for the development of a bike parking network. All metrics are summarized at the 2020 Neighborhood Tabulation Area geography. The five component indicators are compiled into an overall score.
 
-1.  Transit score - neighborhoods receive points for each transit station in their neighborhood. They receive 3 points for a commuter rail station (Metro North or NJT), 2 points for a subway "hub" with 4 lines or more, and 1 point for every subway or PATH station. Neighborhoods are then ranked by percentile of the cumulative transit score, leaving them with a transit score between 0 and 1. Neighborhoods with no transit stops will receive 0.
+1.  Transit score - neighborhoods receive points for each transit station in their neighborhood. They receive 3 points for a commuter rail station (Metro North or New Jersey Transit), 2 points for a subway "hub" with 4 lines or more, and 1 point for every subway or PATH station. Neighborhoods are then ranked by percentile of the cumulative transit score, leaving them with a transit score between 0 and 1. Neighborhoods with no transit stops receive 0 points.
 
-2.  Bike thefts score - neighborhoods are ranked by percentile based on the number of bike thefts per capita, leaving them with a bike theft score between 0 and 1.
+2.  Bike thefts score - neighborhoods are ranked by percentile based on the number of bike thefts per capita, leaving them with a bike thefts score between 0 and 1.
 
-3.  Jobs score - neighborhoods receive points for each job in their neighborhood. They receive 3 points for each low income job, 2 points for each middle income job, and 1 point for each high income job. Neighborhoods are then ranked by percentile of their cumulative job points, leaving them with a jobs score between 0 and 1
+3.  Jobs score - neighborhoods receive points for each job in their neighborhood. In order to focus on equity, we weighted jobs based on the income level. Each neighborhood receives 3 points for each low income job ($15K or below), 2 points for each middle income job ($15-$40K), and 1 point for each high income job ($40K+).Neighborhoods are then ranked by percentile of their cumulative job points, leaving them with a jobs score between 0 and 1.
 
 4.  Bike infrastructure score - we measure the total length of bike lanes in each neighborhood, and count the total number of bike racks in each neighborhood. Neighborhoods are then ranked by percentile for the length of bike lanes, which comprises half of the bike infrastructure score. Neighborhoods are also ranked by the percentile for number of bike racks, which comprises the other half of the score. We add the bike lane percentile and the bike rack percentile together and then re-rank all neighborhoods based on that composite number for a bike infrastructure score between 0 and 1.
 

@@ -62,7 +62,7 @@ ui <- fluidPage(
 
       div(
         tags$h4(
-        "Use this interactive map to identify locations that would best support secure bicycle parking. Toggle the evaluation criteria below to see how different metrics influence bicycle parking needs and feasibility. The Network Development Index Components combine these metrics to create scores that can be used to evaluate potential locations for Oonee stations. Neighborhoods with higher scores may be more likely to host successful Oonee stations, while neighborhoods with lower scores may be more challenging."
+          "Use this interactive map to identify locations that might support secure bicycle parking. Toggle the evaluation criteria below to see how different metrics and geography influence bicycle parking needs and feasibility. The Network Development Index Components combine these metrics to create scores that can be used to evaluate potential locations for Oonee stations. Neighborhoods with higher scores may be more likely to host successful Oonee stations, while neighborhoods with lower scores may be more challenging."
         )
         ),
       div(
